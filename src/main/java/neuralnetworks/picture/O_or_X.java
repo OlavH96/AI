@@ -1,6 +1,7 @@
 package neuralnetworks.picture;
 
 import neuralnetworks.picture.picUtil.PictureUtil;
+import neuralnetworks.picture.picUtil.Pixel;
 import neuralnetworks.util.Loader;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
@@ -26,18 +27,27 @@ public class O_or_X {
     final static String TEST_FOLDER = "/home/faiter/IdeaProjects/AI/src/main/resources/pictures/test";
     final static String OUTPUT_FOLDER = "/home/faiter/IdeaProjects/AI/src/main/resources/pictures/output/";
 
+    final static int NUMBER_OF_BYTES_IN_PIXEL = 4;
+
     public static DataSet createDataSet(List<BufferedImage> images, List<Shape> output){
 
         int size = ((DataBufferByte) images.get(0).getRaster().getDataBuffer()).getData().length;
 
-        DataSet trainingSet = new DataSet(size, 1);
+        DataSet trainingSet = new DataSet(size/NUMBER_OF_BYTES_IN_PIXEL, 1);
 
         for (int i = 0; i < images.size(); i++) {
 
             BufferedImage bufferedImage = images.get(i);
-            double[] doubles = Loader.loadPixelData(bufferedImage);
+            //double[] doubles = Loader.loadPixelData(bufferedImage);
 
-            trainingSet.addRow(new DataSetRow(doubles, new double[]{output.get(i).getValue()}));
+            byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+
+            List<Pixel> from = PictureUtil.from(data);
+
+            double[] objects = from.stream().mapToDouble(Pixel::getScaledBrightness).toArray();
+
+            /*doubles*/
+            trainingSet.addRow(new DataSetRow(objects, new double[]{output.get(i).getValue()}));
         }
 
         return trainingSet;
@@ -58,13 +68,10 @@ public class O_or_X {
         );
 
         int size = ((DataBufferByte)bufferedImages.get(0).getRaster().getDataBuffer()).getData().length;
+        int numberOfDataPoints = size/NUMBER_OF_BYTES_IN_PIXEL;
+        int width = (int) Math.sqrt(numberOfDataPoints);
 
-        //System.out.println(size/4); // /4 fordi r g b alpha bytes pr pixel
-        int width = (int) Math.sqrt(size/4);
-        //System.out.println(width);
-
-        NeuralNetwork neuralNetwork = new Perceptron(size, 1);
-
+        NeuralNetwork neuralNetwork = new Perceptron(numberOfDataPoints, 1);
         neuralNetwork.learn(trainingSet);
 
         //neuralNetwork.save("/home/faiter/IdeaProjects/AI/src/main/resources/perceptron.nnet");
@@ -80,7 +87,7 @@ public class O_or_X {
 
             String name = filesInFolder.get(i).getName();
 
-            double[] data = Loader.loadPixelData(image);
+            double[] data = Loader.loadPixelGreyscaleData(image);
 
             ImageIO.write(image, "png", new File(OUTPUT_FOLDER+name+"_compressed.png"));
 

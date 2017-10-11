@@ -1,5 +1,8 @@
 package neuralnetworks.util;
 
+import neuralnetworks.picture.picUtil.PictureUtil;
+import neuralnetworks.picture.picUtil.Pixel;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -15,6 +18,14 @@ import java.util.stream.Collectors;
  * Created by faiter on 10/11/17.
  */
 public class Loader {
+
+    public static double[] loadPixelGreyscaleData(BufferedImage image){
+
+        byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+
+        return PictureUtil.from(pixels).stream().mapToDouble(Pixel::getScaledBrightness).toArray();
+
+    }
 
     public static double[] loadPixelData(BufferedImage image){
 
