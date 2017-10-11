@@ -1,0 +1,23 @@
+group '1337'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven{
+        url "http://neuroph.sourceforge.net/maven2/"
+        credentials {
+            username = "username"
+            password = "password"
+        }
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'org.neuroph:neuroph-core:2.94'
+}
