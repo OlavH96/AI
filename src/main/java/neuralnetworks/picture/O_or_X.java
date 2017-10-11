@@ -1,12 +1,9 @@
 package neuralnetworks.picture;
 
 import neuralnetworks.picture.picUtil.PictureUtil;
-import neuralnetworks.picture.picUtil.Pixel;
+import neuralnetworks.util.DataSetUtil;
 import neuralnetworks.util.Loader;
-import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
-import org.neuroph.core.data.DataSetRow;
-import org.neuroph.nnet.Perceptron;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -29,72 +26,44 @@ public class O_or_X {
 
     final static int NUMBER_OF_BYTES_IN_PIXEL = 4;
 
-    public static DataSet createDataSet(List<BufferedImage> images, List<Shape> output){
-
-        int size = ((DataBufferByte) images.get(0).getRaster().getDataBuffer()).getData().length;
-
-        DataSet trainingSet = new DataSet(size/NUMBER_OF_BYTES_IN_PIXEL, 1);
-
-        for (int i = 0; i < images.size(); i++) {
-
-            BufferedImage bufferedImage = images.get(i);
-            //double[] doubles = Loader.loadPixelData(bufferedImage);
-
-            byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
-
-            List<Pixel> from = PictureUtil.from(data);
-
-            double[] objects = from.stream().mapToDouble(Pixel::getScaledBrightness).toArray();
-
-            /*doubles*/
-            trainingSet.addRow(new DataSetRow(objects, new double[]{output.get(i).getValue()}));
-        }
-
-        return trainingSet;
-    }
-
     public static void main(String[] args) throws IOException {
 
         List<BufferedImage> bufferedImages = Loader.loadImages(
                 Arrays.asList(
                         "/pictures/train/x.png",
+                        "/pictures/train/x1.png",
                 "/pictures/train/o1.png",
                 "/pictures/train/o2.png"
                 ));
 
-        DataSet trainingSet = createDataSet(
+        DataSet trainingSet = DataSetUtil.createDataSet(
                 bufferedImages, // images
-                Arrays.asList(X, O, O) // expected
+                Arrays.asList(X, X, O, O) // expected values
         );
 
+        // number of bytes
         int size = ((DataBufferByte)bufferedImages.get(0).getRaster().getDataBuffer()).getData().length;
-        int numberOfDataPoints = size/NUMBER_OF_BYTES_IN_PIXEL;
-        int width = (int) Math.sqrt(numberOfDataPoints);
+        // number of pixels
+        int numberOfPixels = size/NUMBER_OF_BYTES_IN_PIXEL;
 
-        NeuralNetwork neuralNetwork = new Perceptron(numberOfDataPoints, 1);
-        neuralNetwork.learn(trainingSet);
+        SimpleNeuralNetwork neuralNetwork = new SimpleNeuralNetwork(numberOfPixels, 1);
+        neuralNetwork.train(trainingSet);
 
-        //neuralNetwork.save("/home/faiter/IdeaProjects/AI/src/main/resources/perceptron.nnet");
-        //NeuralNetwork fromFile = NeuralNetwork.createFromFile("/home/faiter/IdeaProjects/AI/src/main/resources/perceptron.nnet");
-
-        List<File> filesInFolder = Loader.getFilesInFolder(TEST_FOLDER);
+        List<File> filesInFolder = Loader.getFilesInFolder(TEST_FOLDER); // Just so you have the names
         List<BufferedImage> images = Loader.loadImagesFromFolder(TEST_FOLDER);
 
         for (int i = 0; i < images.size(); i++) {
 
             BufferedImage image = images.get(i);
-            image = PictureUtil.scale(image, width); // Scales image to test images size
-
-            String name = filesInFolder.get(i).getName();
+            image = PictureUtil.scale(image, (int) Math.sqrt(numberOfPixels)); // Scales image to test images size
 
             double[] data = Loader.loadPixelGreyscaleData(image);
 
+            String name = filesInFolder.get(i).getName();
+
             ImageIO.write(image, "png", new File(OUTPUT_FOLDER+name+"_compressed.png"));
 
-            neuralNetwork.setInput(data);
-            neuralNetwork.calculate();
-
-            double[] output = neuralNetwork.getOutput();
+            double[] output = neuralNetwork.test(data);
 
             System.out.println(name +" - "+Shape.fromValue((int) output[0]));
         }

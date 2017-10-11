@@ -41,7 +41,7 @@ public class Pixel {
     }
     public double getBrightness(){
 
-        return 0.2126*r + 0.7152*g + 0.0722*b;
+        return 0.2126*r + 0.7152*g + 0.0722*b; // Perceived brightness
 
     }
     public double getScaledBrightness(){
@@ -53,5 +53,6 @@ public class Pixel {
     public static void main(String[] args) {
 
         Pixel pixel = new Pixel(255, 255, 255, 1);
+        System.out.println(pixel.getScaledBrightness());
     }
 }

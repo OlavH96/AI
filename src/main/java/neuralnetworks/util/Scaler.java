@@ -39,23 +39,7 @@ public class Scaler {
         return scaleArray(array, min, max);
     }
 
-    public static double[] reduce(double[] array, int newLength){
 
-        double[] out = new double[newLength];
-
-        double factor = (double) array.length/(double) newLength; // when to add close values together
-
-        //System.out.println(factor);
-
-        for (int i = 0; i < newLength; i++) {
-
-            out[i] = array[(int) (i*factor)];
-
-
-        }
-
-        return out;
-    }
 
     public static void main(String[] args) {
 
@@ -65,8 +49,6 @@ public class Scaler {
 
         System.out.println(Arrays.toString(autoScaleArray(doubles)));
 
-        System.out.println(Arrays.toString(reduce(doubles, 2)));
-        System.out.println(Arrays.toString(reduce(doubles, doubles.length)));
 
     }
 }
