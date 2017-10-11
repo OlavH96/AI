@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by faiter on 10/11/17.
@@ -34,7 +35,7 @@ public class Loader {
             }
         }
 
-        return out;
+        return Scaler.autoScaleArray(out);
     }
     public static BufferedImage loadImage(String path){
 
@@ -62,16 +63,25 @@ public class Loader {
 
         return out;
     }
+
+    public static List<File> getFilesInFolder(String folderPath){
+
+        File folder = new File(folderPath);
+
+        File[] listOfFiles = folder.listFiles();
+
+        return Arrays.stream(listOfFiles).collect(Collectors.toList());
+
+    }
+
     public static List<BufferedImage> loadImagesFromFolder(String folderPath) throws IOException {
 
         List<BufferedImage> out = new ArrayList<>();
 
         File folder = new File(folderPath);
 
-        System.out.println(folder);
 
         File[] listOfFiles = folder.listFiles();
-        System.out.println(Arrays.toString(listOfFiles));
         Arrays.stream(listOfFiles).forEach(file -> {
 
             out.add(Loader.loadImageFromAbsolutePath(file.getPath()));
@@ -81,7 +91,7 @@ public class Loader {
     }
     public static BufferedImage loadImageFromAbsolutePath(String path){
 
-        System.out.println(path.split("/")[(path.split("/").length-1)]);
+        //System.out.println(path.split("/")[(path.split("/").length-1)]);
         try {
 
             BufferedImage read = ImageIO.read(new File(path));
