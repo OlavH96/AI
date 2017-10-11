@@ -20,26 +20,18 @@ import static neuralnetworks.picture.Shape.X;
  */
 public class O_or_x {
 
-
-
     public static DataSet createDataSet(List<BufferedImage> images, List<Shape> output){
 
         int size = ((DataBufferByte) images.get(0).getRaster().getDataBuffer()).getData().length;
 
         DataSet trainingSet = new DataSet(size, 1);
 
+        for (int i = 0; i < images.size(); i++) {
 
-        BufferedImage x = images.get(0);
-        double[] x_pixels = Loader.loadPixelData(x);
-        trainingSet.addRow(new DataSetRow(x_pixels, new double[]{output.get(0).getValue()})); // 0,0 -> 0
-
-        BufferedImage o1 = images.get(1);
-        double[] o1_pixels = Loader.loadPixelData(o1);
-        trainingSet.addRow(new DataSetRow(o1_pixels, new double[]{output.get(1).getValue()})); // 0,0 -> 0
-
-        BufferedImage o2 = images.get(2);
-        double[] o2_pixels = Loader.loadPixelData(o2);
-        trainingSet.addRow(new DataSetRow(o2_pixels, new double[]{output.get(2).getValue()})); // 0,0 -> 0
+            BufferedImage bufferedImage = images.get(i);
+            double[] doubles = Loader.loadPixelData(bufferedImage);
+            trainingSet.addRow(new DataSetRow(doubles, new double[]{output.get(i).getValue()}));
+        }
 
         return trainingSet;
     }
