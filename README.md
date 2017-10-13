@@ -13,3 +13,5 @@ network is stored in the app.nnet file, and is loaded at the start of the app, a
 All images are scaled to the same 5x5 format, and inputted into the network. You could use larger images to achieve better accuracy, and this
 would be needed for text for example. Initially I tried with 3x3, but this was too low fidelity to capture all user input, especially
 when the user did not draw in the entire drawing area, which is often the case.
+
+[This is the neural net implementation](https://github.com/OlavH96/AI/blob/master/src/main/java/neuralnetworks/picture/SimpleNeuralNetwork.java) which is a wrapper for the Neuroph neural network framework. It uses the Perceptron style of neural network, using the Sigmoid function, these can be exchanged as required.  
