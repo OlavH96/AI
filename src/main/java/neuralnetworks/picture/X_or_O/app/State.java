@@ -1,16 +1,14 @@
 package neuralnetworks.picture.X_or_O.app;
 
-import neuralnetworks.picture.Shape;
-
 import java.awt.image.BufferedImage;
 
 /**
  * Created by faiter on 10/13/17.
  */
-public class State {
+public class State <T>{
 
     private BufferedImage compressedImage;
-    private Shape guess;
+    private T guess;
 
     public BufferedImage getCompressedImage() {
 
@@ -22,12 +20,12 @@ public class State {
         this.compressedImage = compressedImage;
     }
 
-    public Shape getGuess() {
+    public T getGuess() {
 
         return guess;
     }
 
-    public void setGuess(Shape guess) {
+    public void setGuess(T guess) {
 
         this.guess = guess;
     }

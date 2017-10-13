@@ -1,6 +1,7 @@
 package neuralnetworks.util;
 
 import neuralnetworks.picture.Shape;
+import neuralnetworks.picture.text.Letter;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 
@@ -46,6 +47,16 @@ public class DataSetUtil {
         System.out.println(Arrays.toString(doubles) +" - "+shape.getValue());
 
         return (new DataSetRow(doubles, new double[]{(double) shape.getValue()}));
+
+    }
+    public static DataSetRow learn(BufferedImage newImage, Letter letter){
+
+        double[] doubles = Loader.loadPixelData(newImage);
+        doubles = Scaler.scaleArray(doubles, 0, 255);
+
+        System.out.println(Arrays.toString(doubles) +" - "+ Arrays.toString(Letter.getResultArrayFor(letter, Letter.values().length)));
+
+        return (new DataSetRow(doubles, Letter.getResultArrayFor(letter, Letter.values().length)));
 
     }
 }

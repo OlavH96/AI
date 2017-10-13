@@ -26,7 +26,6 @@ public enum Letter {
             if (d == asDouble) break;
             index++;
         }
-        System.out.println(index);
 
         return values()[index];
 

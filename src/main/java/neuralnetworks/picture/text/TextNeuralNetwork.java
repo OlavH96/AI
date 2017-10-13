@@ -16,7 +16,7 @@ public class TextNeuralNetwork {
     public TextNeuralNetwork(int numberOfInputs, int numberOfOutputs) {
 
         System.out.println("Making network");
-        neuralNetwork  = new MultiLayerPerceptron(numberOfInputs, numberOfOutputs*2, numberOfOutputs);
+        neuralNetwork  = new MultiLayerPerceptron(numberOfInputs, numberOfOutputs);
 
     }
 

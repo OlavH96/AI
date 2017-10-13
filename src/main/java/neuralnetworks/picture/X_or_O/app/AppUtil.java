@@ -22,8 +22,13 @@ public class AppUtil {
 
     public static void toggleButtons(Button... buttons){
 
-        for (Button b : buttons)
-            b.setDisable(!b.isDisabled());
+        for (Button b : buttons){
+            try {
+                b.setDisable(!b.isDisabled());
+
+            }catch (RuntimeException e){}
+
+        }
 
     }
 
