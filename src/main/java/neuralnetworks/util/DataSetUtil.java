@@ -6,6 +6,7 @@ import org.neuroph.core.data.DataSetRow;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,5 +36,16 @@ public class DataSetUtil {
         }
 
         return trainingSet;
+    }
+
+    public static DataSetRow learn(BufferedImage newImage, Shape shape){
+
+        double[] doubles = Loader.loadPixelData(newImage);
+        doubles = Scaler.scaleArray(doubles, 0, 255);
+
+        System.out.println(Arrays.toString(doubles) +" - "+shape.getValue());
+
+        return (new DataSetRow(doubles, new double[]{(double) shape.getValue()}));
+
     }
 }

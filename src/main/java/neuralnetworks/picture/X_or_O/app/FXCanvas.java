@@ -52,7 +52,7 @@ public class FXCanvas {
 
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(30);
+        gc.setLineWidth(80);
 
     }
 

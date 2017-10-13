@@ -34,6 +34,7 @@ public class SimpleNeuralNetwork {
 
     public void retrain(DataSetRow newData){
 
+        // Turns out you dont need the original dataset to retrain the network with new data
         if (this.trainingSet == null) this.trainingSet = new DataSet(newData.getInput().length);
 
         trainingSet.add(newData);
