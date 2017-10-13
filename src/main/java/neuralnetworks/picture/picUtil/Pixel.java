@@ -39,6 +39,9 @@ public class Pixel {
 
         return alpha;
     }
+    public double getGrey(){
+        return (r+g+b) / 3;
+    }
     public double getBrightness(){
 
         return 0.2126*r + 0.7152*g + 0.0722*b; // Perceived brightness
@@ -48,6 +51,9 @@ public class Pixel {
 
         return Scaler.scale(getBrightness(), 0, 256);
 
+    }
+    public double getRGBSum(){
+        return r+g+b;
     }
 
     public static void main(String[] args) {

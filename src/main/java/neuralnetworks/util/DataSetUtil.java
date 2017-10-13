@@ -1,8 +1,6 @@
 package neuralnetworks.util;
 
 import neuralnetworks.picture.Shape;
-import neuralnetworks.picture.picUtil.PictureUtil;
-import neuralnetworks.picture.picUtil.Pixel;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 
@@ -15,9 +13,11 @@ import java.util.List;
  */
 public class DataSetUtil {
 
-    final static int NUMBER_OF_BYTES_IN_PIXEL = 4;
+    private final static int NUMBER_OF_BYTES_IN_PIXEL = 4;
 
     public static DataSet createDataSet(List<BufferedImage> images, List<Shape> output){
+
+        if (images.size() != output.size()) throw new IllegalArgumentException("images length != output length");
 
         int size = ((DataBufferByte) images.get(0).getRaster().getDataBuffer()).getData().length;
 
@@ -26,16 +26,10 @@ public class DataSetUtil {
         for (int i = 0; i < images.size(); i++) {
 
             BufferedImage bufferedImage = images.get(i);
-            //double[] doubles = Loader.loadPixelData(bufferedImage);
 
-            byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+            double[] doubles = Loader.loadPixelData(bufferedImage);
 
-            List<Pixel> from = PictureUtil.from(data);
-
-            double[] objects = from.stream().mapToDouble(Pixel::getScaledBrightness).toArray();
-
-            /*doubles*/
-            trainingSet.addRow(new DataSetRow(objects, new double[]{output.get(i).getValue()}));
+            trainingSet.addRow(new DataSetRow(doubles, new double[]{output.get(i).getValue()}));
         }
 
         return trainingSet;

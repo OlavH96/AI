@@ -23,8 +23,17 @@ public class Loader {
 
         byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 
-        return PictureUtil.from(pixels).stream().mapToDouble(Pixel::getScaledBrightness).toArray();
+        System.out.println("***");
+        System.out.println(Arrays.toString(pixels));
 
+        double[] doubles = loadPixelData(image);
+        System.out.println(Arrays.toString(doubles));
+
+        double[] doubles1 = PictureUtil.from(pixels).stream().mapToDouble(Pixel::getGrey).toArray();
+
+        System.out.println(Arrays.toString(doubles1));
+
+        return doubles1;
     }
 
     public static double[] loadPixelData(BufferedImage image){
@@ -33,12 +42,12 @@ public class Loader {
 
         byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 
-        double[] out = new double[pixels.length];
-
         int counter = 0;
 
         int width = image.getWidth();
         int height = image.getHeight();
+
+        double[] out = new double[width*height];
 
         for (int j = 0; j < width; j++) {
             for (int k = 0; k < height; k++) {
@@ -46,10 +55,11 @@ public class Loader {
             }
         }
 
-        return Scaler.autoScaleArray(out);
+        return out;
     }
     public static BufferedImage loadImage(String path){
 
+        System.out.println(path);
         try {
             BufferedImage read = ImageIO.read(Loader.class.getResource(path));
 

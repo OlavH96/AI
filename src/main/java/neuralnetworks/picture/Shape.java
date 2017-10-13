@@ -25,4 +25,13 @@ public enum Shape {
 
     }
 
+    public Shape next(){
+
+        int index = ordinal();
+
+        boolean b = index == values().length-1;
+
+        return values()[b ? 0 : index+1];
+
+    }
 }
