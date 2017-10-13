@@ -29,6 +29,8 @@ public class DataSetUtil {
 
             double[] doubles = Loader.loadPixelData(bufferedImage);
 
+            doubles = Scaler.scaleArray(doubles, 0, 255);
+
             trainingSet.addRow(new DataSetRow(doubles, new double[]{output.get(i).getValue()}));
         }
 

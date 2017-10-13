@@ -17,9 +17,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import neuralnetworks.picture.Shape;
 import neuralnetworks.picture.SimpleNeuralNetwork;
-import neuralnetworks.picture.X_or_O.learning.Learner;
 import neuralnetworks.picture.picUtil.PictureUtil;
 import neuralnetworks.util.Loader;
+import neuralnetworks.util.Scaler;
+import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSetRow;
 
 import javax.imageio.ImageIO;
@@ -40,7 +41,9 @@ public class O_or_X_App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        SimpleNeuralNetwork neuralNetwork = Learner.learn();
+        NeuralNetwork fromFile = NeuralNetwork.createFromFile("/home/faiter/IdeaProjects/AI/src/main/resources/perceptron.nnet");
+
+        SimpleNeuralNetwork neuralNetwork = new SimpleNeuralNetwork(fromFile);
 
         State state = new State();
 
@@ -48,7 +51,6 @@ public class O_or_X_App extends Application {
         pane.setPadding(new Insets(10));
 
         Canvas canvas = FXCanvas.getCanvas();
-
 
         VBox center = new VBox();
         center.setPadding(new Insets(10));
@@ -63,6 +65,7 @@ public class O_or_X_App extends Application {
         wrongButton.setDisable(true);
 
         calculateButton.setOnAction(actionEvent -> {
+
             WritableImage image = canvas.snapshot(null, null);
             try {
                 ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(OUTPUT_FOLDER+"output.png"));
@@ -73,8 +76,6 @@ public class O_or_X_App extends Application {
 
             BufferedImage image1 = Loader.loadImageFromAbsolutePath(OUTPUT_FOLDER + "output.png");
             image1 = PictureUtil.scale(image1, (int) Math.sqrt(neuralNetwork.getNeuralNetwork().getInputsCount())); // Scales image to test images size
-
-
 
             try {
                 ImageIO.write(image1, "png", new File(OUTPUT_FOLDER+"compressed.png"));
@@ -114,8 +115,8 @@ public class O_or_X_App extends Application {
 
             System.out.println("Correct was: "+ guess);
 
-           /* DataSetRow learn = learn(state.getCompressedImage(), guess);
-            neuralNetwork.retrain(learn);*/
+            DataSetRow learn = learn(state.getCompressedImage(), guess);
+            neuralNetwork.retrain(learn);
 
             clearCanvas(canvas);
             toggleButtons(correctButton, wrongButton, calculateButton);
@@ -138,7 +139,13 @@ public class O_or_X_App extends Application {
         stage.setScene(new Scene(pane));
         stage.setTitle("O or X");
         stage.show();
+
+        stage.setOnCloseRequest(windowEvent -> {
+            neuralNetwork.getNeuralNetwork().save("/home/faiter/IdeaProjects/AI/src/main/resources/app.nnet");
+
+        });
     }
+
 
     private void clearCanvas(Canvas canvas){
         canvas.getGraphicsContext2D().clearRect(0,0, canvas.getWidth(), canvas.getHeight());
@@ -159,6 +166,7 @@ public class O_or_X_App extends Application {
     private DataSetRow learn(BufferedImage newImage, Shape shape){
 
         double[] doubles = Loader.loadPixelData(newImage);
+        doubles = Scaler.scaleArray(doubles, 0, 255);
 
         System.out.println(Arrays.toString(doubles) +" - "+shape.getValue());
 

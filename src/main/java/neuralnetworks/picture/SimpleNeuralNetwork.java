@@ -15,12 +15,14 @@ public class SimpleNeuralNetwork {
 
     public SimpleNeuralNetwork(int numberOfInputs, int numberOfOutputs) {
 
+        //MultiLayerPerceptron multiLayerPerceptron = new MultiLayerPerceptron(numberOfInputs, numberOfInputs, numberOfOutputs);
         neuralNetwork = new Perceptron(numberOfInputs, numberOfOutputs, TransferFunctionType.SIGMOID);
     }
 
     public SimpleNeuralNetwork(NeuralNetwork neuralNetwork) {
 
         this.neuralNetwork = neuralNetwork;
+
     }
     private DataSet trainingSet;
     public void train(DataSet trainingSet){
@@ -31,6 +33,8 @@ public class SimpleNeuralNetwork {
     }
 
     public void retrain(DataSetRow newData){
+
+        if (this.trainingSet == null) this.trainingSet = new DataSet(newData.getInput().length);
 
         trainingSet.add(newData);
         System.out.println(trainingSet);

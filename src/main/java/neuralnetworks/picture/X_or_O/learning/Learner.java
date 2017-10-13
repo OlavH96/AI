@@ -25,15 +25,18 @@ public class Learner {
 
         List<BufferedImage> bufferedImages = Loader.loadImages(
                 Arrays.asList(
-                        "/pictures/train/x.png",
-                        "/pictures/train/x1.png",
-                        "/pictures/train/o1.png",
-                        "/pictures/train/o2.png"
+                        "/pictures/train/x_5_1.png",
+                        "/pictures/train/x_5_2.png",
+                        "/pictures/train/o_5_1.png",
+                        "/pictures/train/o_5_2.png",
+                        "/pictures/train/o_5_3.png",
+                        "/pictures/train/o_5_4.png",
+                        "/pictures/train/o_5_5.png"
                 ));
 
         DataSet trainingSet = DataSetUtil.createDataSet(
                 bufferedImages, // images
-                Arrays.asList(X,X,O, O) // expected values
+                Arrays.asList(X,X,O,O,O,O,O) // expected values
         );
 
         System.out.println(trainingSet);
@@ -43,8 +46,9 @@ public class Learner {
         // number of pixels
         int numberOfPixels = size/NUMBER_OF_BYTES_IN_PIXEL;
 
-        SimpleNeuralNetwork neuralNetwork = new SimpleNeuralNetwork(numberOfPixels, 1);
+        System.out.println(numberOfPixels);
 
+        SimpleNeuralNetwork neuralNetwork = new SimpleNeuralNetwork(numberOfPixels, 1);
 
         System.out.println("Training..");
         neuralNetwork.train(trainingSet);
