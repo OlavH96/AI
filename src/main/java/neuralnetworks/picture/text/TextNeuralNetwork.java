@@ -1,26 +1,26 @@
-package neuralnetworks.picture;
+package neuralnetworks.picture.text;
 
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
-import org.neuroph.nnet.Perceptron;
-import org.neuroph.util.TransferFunctionType;
+import org.neuroph.nnet.MultiLayerPerceptron;
 
 /**
  * Created by faiter on 10/11/17.
  */
-public class SimpleNeuralNetwork {
+public class TextNeuralNetwork {
 
     private NeuralNetwork neuralNetwork;
     private DataSet trainingSet;
 
-    public SimpleNeuralNetwork(int numberOfInputs, int numberOfOutputs) {
+    public TextNeuralNetwork(int numberOfInputs, int numberOfOutputs) {
 
-        neuralNetwork  = new Perceptron(numberOfInputs, numberOfOutputs, TransferFunctionType.SIGMOID);
+        System.out.println("Making network");
+        neuralNetwork  = new MultiLayerPerceptron(numberOfInputs, numberOfOutputs*2, numberOfOutputs);
 
     }
 
-    public SimpleNeuralNetwork(NeuralNetwork neuralNetwork) {
+    public TextNeuralNetwork(NeuralNetwork neuralNetwork) {
 
         this.neuralNetwork = neuralNetwork;
     }

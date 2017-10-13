@@ -22,7 +22,7 @@ public class O_or_X {
 
     public static void main(String[] args) throws IOException {
 
-        NeuralNetwork fromFile = NeuralNetwork.createFromFile("/home/faiter/IdeaProjects/AI/src/main/resources/perceptron.nnet");
+        NeuralNetwork fromFile = NeuralNetwork.createFromFile("/home/faiter/IdeaProjects/AI/src/main/resources/app.nnet");
         SimpleNeuralNetwork neuralNetwork = new SimpleNeuralNetwork(fromFile);
 
         List<File> filesInFolder = Loader.getFilesInFolder(TEST_FOLDER); // Just so you have the names
