@@ -1,7 +1,8 @@
 package neuralnetworks.util;
 
-import neuralnetworks.picture.Shape;
-import neuralnetworks.picture.text.Letter;
+import neuralnetworks.picture.X_or_O.data.Shape;
+import neuralnetworks.picture.generic.OutputNode;
+import neuralnetworks.picture.text.util.Constants;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 
@@ -15,7 +16,6 @@ import java.util.List;
  */
 public class DataSetUtil {
 
-    private final static int NUMBER_OF_BYTES_IN_PIXEL = 4;
 
     public static DataSet createDataSet(List<BufferedImage> images, List<Shape> output){
 
@@ -23,7 +23,7 @@ public class DataSetUtil {
 
         int size = ((DataBufferByte) images.get(0).getRaster().getDataBuffer()).getData().length;
 
-        DataSet trainingSet = new DataSet(size/NUMBER_OF_BYTES_IN_PIXEL, 1);
+        DataSet trainingSet = new DataSet(size/ Constants.NUMBER_OF_BYTES_IN_PIXEL.getNumber(), 1);
 
         for (int i = 0; i < images.size(); i++) {
 
@@ -39,24 +39,15 @@ public class DataSetUtil {
         return trainingSet;
     }
 
-    public static DataSetRow learn(BufferedImage newImage, Shape shape){
+    public static DataSetRow learn(BufferedImage newImage, OutputNode letter){
 
         double[] doubles = Loader.loadPixelData(newImage);
         doubles = Scaler.scaleArray(doubles, 0, 255);
 
-        System.out.println(Arrays.toString(doubles) +" - "+shape.getValue());
+        double[] array = letter.getResultArray();
+        System.out.println(Arrays.toString(doubles) +" - "+ Arrays.toString(array));
 
-        return (new DataSetRow(doubles, new double[]{(double) shape.getValue()}));
-
-    }
-    public static DataSetRow learn(BufferedImage newImage, Letter letter){
-
-        double[] doubles = Loader.loadPixelData(newImage);
-        doubles = Scaler.scaleArray(doubles, 0, 255);
-
-        System.out.println(Arrays.toString(doubles) +" - "+ Arrays.toString(Letter.getResultArrayFor(letter, Letter.values().length)));
-
-        return (new DataSetRow(doubles, Letter.getResultArrayFor(letter, Letter.values().length)));
+        return new DataSetRow(doubles, array);
 
     }
 }

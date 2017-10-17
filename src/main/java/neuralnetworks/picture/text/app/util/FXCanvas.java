@@ -1,4 +1,4 @@
-package neuralnetworks.picture.X_or_O.app;
+package neuralnetworks.picture.text.app.util;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -39,18 +39,18 @@ public class FXCanvas {
         double canvasWidth = gc.getCanvas().getWidth();
         double canvasHeight = gc.getCanvas().getHeight();
 
-        gc.setFill(Color.LIGHTGRAY);
+        gc.setFill(Color.WHITE);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(10);
 
         gc.fill();
-        gc.strokeRect(
+        gc.fillRect(
                 0,              //x of the upper left corner
                 0,              //y of the upper left corner
                 canvasWidth,    //width of the rectangle
                 canvasHeight);  //height of the rectangle
 
-        gc.setFill(Color.RED);
+        gc.setFill(Color.BLACK);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(80);
 

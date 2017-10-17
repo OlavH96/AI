@@ -1,4 +1,4 @@
-package neuralnetworks.picture.X_or_O.app;
+package neuralnetworks.picture.text.data;
 
 import java.awt.image.BufferedImage;
 

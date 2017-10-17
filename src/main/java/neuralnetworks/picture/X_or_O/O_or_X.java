@@ -1,8 +1,7 @@
 package neuralnetworks.picture.X_or_O;
 
-import neuralnetworks.picture.Shape;
-import neuralnetworks.picture.SimpleNeuralNetwork;
-import neuralnetworks.picture.picUtil.PictureUtil;
+import neuralnetworks.picture.X_or_O.data.Shape;
+import neuralnetworks.picture.text.app.util.PictureUtil;
 import neuralnetworks.util.Loader;
 import org.neuroph.core.NeuralNetwork;
 

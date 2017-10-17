@@ -1,7 +1,7 @@
 package neuralnetworks.util;
 
-import neuralnetworks.picture.picUtil.PictureUtil;
-import neuralnetworks.picture.picUtil.Pixel;
+import neuralnetworks.picture.text.app.util.PictureUtil;
+import neuralnetworks.picture.X_or_O.data.Pixel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

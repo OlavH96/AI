@@ -1,4 +1,4 @@
-package neuralnetworks.picture;
+package neuralnetworks.picture.X_or_O.data;
 
 import java.util.Arrays;
 

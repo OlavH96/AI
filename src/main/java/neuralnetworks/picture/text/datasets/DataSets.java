@@ -1,5 +1,7 @@
-package neuralnetworks.picture.text;
+package neuralnetworks.picture.text.datasets;
 
+import neuralnetworks.picture.text.data.Letter;
+import neuralnetworks.picture.text.util.Constants;
 import neuralnetworks.util.Loader;
 import neuralnetworks.util.Scaler;
 import org.neuroph.core.data.DataSet;
@@ -33,11 +35,9 @@ public class DataSets {
             double[] doubles = Loader.loadPixelData(image);
             doubles = Scaler.scaleArray(doubles, 0, 255);
 
-            dataSetRows.addRow(new DataSetRow(doubles, Letter.getResultArrayFor(expected.get(i), expected.size())));
+            dataSetRows.addRow(new DataSetRow(doubles, expected.get(i).getResultArray()));
 
         }
-
-
 
         return dataSetRows;
     }

@@ -1,4 +1,4 @@
-package neuralnetworks.picture;
+package neuralnetworks.picture.X_or_O;
 
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;

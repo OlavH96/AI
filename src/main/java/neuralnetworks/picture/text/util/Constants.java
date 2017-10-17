@@ -1,4 +1,4 @@
-package neuralnetworks.picture.text;
+package neuralnetworks.picture.text.util;
 
 /**
  * Created by faiter on 10/13/17.

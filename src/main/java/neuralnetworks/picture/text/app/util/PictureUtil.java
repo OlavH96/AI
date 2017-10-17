@@ -1,5 +1,6 @@
-package neuralnetworks.picture.picUtil;
+package neuralnetworks.picture.text.app.util;
 
+import neuralnetworks.picture.X_or_O.data.Pixel;
 import neuralnetworks.util.Loader;
 
 import javax.imageio.ImageIO;

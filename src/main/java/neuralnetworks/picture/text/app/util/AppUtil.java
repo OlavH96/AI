@@ -1,7 +1,9 @@
-package neuralnetworks.picture.X_or_O.app;
+package neuralnetworks.picture.text.app.util;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 
 /**
  * Created by faiter on 10/13/17.
@@ -9,15 +11,23 @@ import javafx.scene.control.Button;
 public class AppUtil {
 
     public static void clearCanvas(Canvas canvas){
-        canvas.getGraphicsContext2D().clearRect(0,0, canvas.getWidth(), canvas.getHeight());
-        canvas.getGraphicsContext2D().setLineWidth(10);
-        canvas.getGraphicsContext2D().strokeRect(
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.WHITE);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(10);
+
+        gc.fill();
+        gc.fillRect(
                 0,              //x of the upper left corner
                 0,              //y of the upper left corner
-                canvas.getWidth(),    //width of the rectangle
-                canvas.getHeight());  //height of the rectangle
+                400,    //width of the rectangle
+                400);  //height of the rectangle
 
-        canvas.getGraphicsContext2D().setLineWidth(80);
+
+
+        gc.setLineWidth(80);
+        gc.setStroke(Color.BLACK);
     }
 
     public static void toggleButtons(Button... buttons){

@@ -1,4 +1,4 @@
-package neuralnetworks.picture.picUtil;
+package neuralnetworks.picture.X_or_O.data;
 
 import neuralnetworks.util.Scaler;
 

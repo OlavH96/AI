@@ -1,6 +1,6 @@
 package neuralnetworks.picture.X_or_O.learning;
 
-import neuralnetworks.picture.SimpleNeuralNetwork;
+import neuralnetworks.picture.X_or_O.SimpleNeuralNetwork;
 import neuralnetworks.util.DataSetUtil;
 import neuralnetworks.util.Loader;
 import org.neuroph.core.data.DataSet;
@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static neuralnetworks.picture.Shape.O;
-import static neuralnetworks.picture.Shape.X;
+import static neuralnetworks.picture.X_or_O.data.Shape.O;
+import static neuralnetworks.picture.X_or_O.data.Shape.X;
 
 /**
  * Created by faiter on 10/13/17.

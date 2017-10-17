@@ -1,6 +1,10 @@
-package neuralnetworks.picture.text;
+package neuralnetworks.picture.text.learners;
 
-import neuralnetworks.picture.picUtil.PictureUtil;
+import neuralnetworks.picture.generic.OutputNode;
+import neuralnetworks.picture.text.app.util.PictureUtil;
+import neuralnetworks.picture.text.datasets.DataSets;
+import neuralnetworks.picture.text.networks.TextNeuralNetwork;
+import neuralnetworks.picture.text.data.Letter;
 import neuralnetworks.util.Loader;
 import neuralnetworks.util.Scaler;
 import org.neuroph.core.data.DataSet;
@@ -59,11 +63,11 @@ public class Learner {
             double[] output = neuralNetwork.test(data);
             ImageIO.write(image,"png", new File(OUTPUT_FOLDER+name));
             //System.out.println(Arrays.toString(output));
-            System.out.println(name +" - "+ Letter.of(output));
+            System.out.println(name +" - "+ OutputNode.of(output, Letter.values()));
         }
 
         System.out.println("Saving..");
-        neuralNetwork.getNeuralNetwork().save("/home/faiter/IdeaProjects/AI/src/main/resources/textnetwork.nnet");
+        neuralNetwork.getNeuralNetwork().save("/home/faiter/IdeaProjects/AI/src/main/resources/textnetworkMultiLayer.nnet");
 
         return neuralNetwork;
     }

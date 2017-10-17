@@ -1,8 +1,9 @@
-package neuralnetworks.picture.X_or_O.app;/**
+package neuralnetworks.picture.text.app;/**
  * Created by faiter on 10/12/17.
  */
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,6 +12,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -18,9 +21,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import neuralnetworks.picture.Shape;
-import neuralnetworks.picture.SimpleNeuralNetwork;
-import neuralnetworks.picture.picUtil.PictureUtil;
+import neuralnetworks.picture.generic.OutputNode;
+import neuralnetworks.picture.text.app.util.AppUtil;
+import neuralnetworks.picture.text.app.util.FXCanvas;
+import neuralnetworks.picture.text.app.util.PictureUtil;
+import neuralnetworks.picture.text.app.util.ToStringer;
+import neuralnetworks.picture.text.data.Letter;
+import neuralnetworks.picture.text.data.State;
+import neuralnetworks.picture.text.networks.TextNeuralNetwork;
+import neuralnetworks.picture.text.util.Percentage;
 import neuralnetworks.util.DataSetUtil;
 import neuralnetworks.util.Loader;
 import org.neuroph.core.NeuralNetwork;
@@ -30,20 +39,28 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class O_or_X_App extends Application {
+public class Text_App extends Application {
 
     private static final String OUTPUT_FOLDER = "/home/faiter/IdeaProjects/AI/src/main/resources/app/output/";
+    private static final String NEURAL_NETWORK_FILE = "/home/faiter/IdeaProjects/AI/src/main/resources/networks/textnetworkMultiLayer.nnet";
 
-    private State<Shape> state = new State<>();
-    private SimpleNeuralNetwork neuralNetwork;
+    private State<Letter> state = new State<>();
+    private TextNeuralNetwork neuralNetwork;
 
     private Canvas canvas = FXCanvas.getCanvas();
     private Button calculateButton = new Button("Calculate");
     private Text outputText = new Text("I think this is: ");
     private Button correctButton = new Button("Correct");
     private Button wrongButton = new Button("Wrong");
+    private Button discardButton = new Button("Discard");
+    private Label actualAnswerTextFieldLabel = new Label("Actual Answer: ");
+    private TextField actualAnswerTextField = new TextField();
 
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     public static void main(String[] args) {
 
@@ -53,8 +70,10 @@ public class O_or_X_App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        NeuralNetwork fromFile = NeuralNetwork.createFromFile("/home/faiter/IdeaProjects/AI/src/main/resources/perceptron.nnet");
-        neuralNetwork = new SimpleNeuralNetwork(fromFile);
+        canvas.getGraphicsContext2D().setLineWidth(30);
+
+        NeuralNetwork fromFile = NeuralNetwork.createFromFile(NEURAL_NETWORK_FILE);
+        neuralNetwork = new TextNeuralNetwork(fromFile);
 
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(10));
@@ -67,51 +86,61 @@ public class O_or_X_App extends Application {
         correctButton.setDisable(true);
         wrongButton.setDisable(true);
 
+        wrongButton.disableProperty().bind(Bindings.isEmpty(actualAnswerTextField.textProperty()));
+
         calculateButton.setOnAction(calculateButtonEvent());
         correctButton.setOnAction(correctButtonEvent());
         wrongButton.setOnAction(wrongButtonEvent());
+        discardButton.setOnAction(discardButtonEvent());
 
         VBox calculateVBox = new VBox(calculateButton, outputText);
         calculateVBox.setSpacing(10);
         calculateVBox.setAlignment(Pos.CENTER);
         elementsVBox.getChildren().add(calculateVBox);
 
-        HBox buttonsHBox = new HBox(correctButton, wrongButton);
+        HBox buttonsHBox = new HBox(correctButton, wrongButton, discardButton);
         buttonsHBox.setSpacing(10);
         buttonsHBox.setAlignment(Pos.CENTER);
 
-        elementsVBox.getChildren().add(buttonsHBox);
+        HBox actualAnswerHBox = new HBox();
+        actualAnswerHBox.setSpacing(10);
+        actualAnswerHBox.setAlignment(Pos.CENTER);
+
+        actualAnswerHBox.getChildren().addAll(actualAnswerTextFieldLabel, actualAnswerTextField);
+
+        elementsVBox.getChildren().addAll(buttonsHBox, actualAnswerHBox);
         pane.setCenter(canvas);
         pane.setBottom(elementsVBox);
 
-        stage.setMinHeight(500);
+        stage.setMinHeight(700);
         stage.setMinWidth(500);
         stage.setScene(new Scene(pane));
-        stage.setTitle("O or X");
+        stage.setTitle("Letter");
         stage.show();
 
         stage.setOnCloseRequest(windowEvent -> {
-            neuralNetwork.getNeuralNetwork().save("/home/faiter/IdeaProjects/AI/src/main/resources/app.nnet");
+            neuralNetwork.getNeuralNetwork().save(NEURAL_NETWORK_FILE);
 
             System.out.println("Saved improved neural network to file");
         });
     }
 
 
-
-
-
-
     private EventHandler<ActionEvent> correctButtonEvent(){
 
         return actionEvent -> {
-                Shape guess = state.getGuess();
+                Letter guess = state.getGuess();
                 System.out.println("Correct was: "+ guess);
 
-                DataSetRow learn = DataSetUtil.learn(state.getCompressedImage(), guess);
-                neuralNetwork.retrain(learn);
+                executorService.submit(() ->{
+                    DataSetRow learn = DataSetUtil.learn(state.getCompressedImage(), guess);
 
+                    neuralNetwork.retrain(learn);
+
+                });
                 AppUtil.clearCanvas(canvas);
+                canvas.getGraphicsContext2D().setLineWidth(30);
+
                 AppUtil.toggleButtons(correctButton, wrongButton, calculateButton);
 
         };
@@ -119,17 +148,34 @@ public class O_or_X_App extends Application {
     private EventHandler<ActionEvent> wrongButtonEvent(){
 
         return actionEvent -> {
-            Shape guess = state.getGuess().next();
-            System.out.println("Correct was: "+ guess);
 
-            DataSetRow learn = DataSetUtil.learn(state.getCompressedImage(), guess);
-            neuralNetwork.retrain(learn);
+            Letter actualLetter = Letter.valueOf(actualAnswerTextField.getText());
+
+            System.out.println("Correct was: "+ actualLetter);
+
+            actualAnswerTextField.setText("");
+
+            executorService.submit(() -> {
+                DataSetRow learn = DataSetUtil.learn(state.getCompressedImage(), actualLetter);
+                neuralNetwork.retrain(learn);
+            });
 
             AppUtil.clearCanvas(canvas);
+            canvas.getGraphicsContext2D().setLineWidth(30);
+
             AppUtil.toggleButtons(correctButton, wrongButton, calculateButton);
 
         };
 
+    }
+    public EventHandler<ActionEvent> discardButtonEvent(){
+        return actionEvent -> {
+            actualAnswerTextField.setText("");
+            AppUtil.clearCanvas(canvas);
+            AppUtil.toggleButtons(correctButton, wrongButton, calculateButton);
+            canvas.getGraphicsContext2D().setLineWidth(30);
+
+        };
     }
     private EventHandler<ActionEvent> calculateButtonEvent(){
 
@@ -154,15 +200,15 @@ public class O_or_X_App extends Application {
 
             double[] test = neuralNetwork.test(Loader.loadPixelData(image1));
 
-            Shape shape = Shape.fromValue((int) test[0]);
+            Letter of = OutputNode.of(test, Letter.values());
+            Map<Letter, Double> letterDoubleMap = Percentage.percentagesFor(test);
 
-            outputText.setText("I think this is: " +shape);
+            outputText.setText("I think this is: " +of+"\n"+"Percentages:\n"+ ToStringer.toStr(letterDoubleMap) );
 
             state.setCompressedImage(image1);
-            state.setGuess(shape);
+            state.setGuess(of);
 
             AppUtil.toggleButtons(correctButton, wrongButton, calculateButton);
-
         };
 
     }
